@@ -23,21 +23,63 @@
           
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
+                {% if request.endpoint != 'main.index' %}
+                <!-- Show these buttons only for logged-in users -->
                 <li class="nav-item active">
-                  <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
+                  <a class="nav-link" href="{{ url_for('main.logout') }}">Home</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="{{ url_for('main.view_todos') }}">Todos</a>
+                    <a class="nav-link" href="{{ url_for('main.view_todos') }}">View Todos</a>
                   </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{{ url_for('main.add_todo') }}">Add Todo</a>
                 </li>
+                {% endif %}
               </ul>
             </div>
           </nav>
     </header>
+
     <div class="m-3">
-        {{ message }}
+      <h1 class="p1 m1">Welcome to Todo App!</h1>
+      <p style="color: red;">{{ message }}</p>
+        <form action="" method="POST">
+          {{ form.csrf_token() }}
+          <!-- <fieldset class="form-group">Index Page</fieldset> -->
+  
+          <div class="form-group">
+              {{ form.username.label(class="form-control-label") }}<br>
+              {% if form.username.errors %}
+                 {{ form.username(class="form-control form-control is-invalid") }}
+                 {% for error in form.username.errors %}
+                          <div class="invalid-feedback">
+                              <span>{{ error }}</span>
+                          </div>
+                  {% endfor %}
+              {% else %}
+                {{ form.username(class="form-control form-control") }}
+              {% endif %}
+          </div>
+  
+          <div class="form-group">
+              {{ form.password.label(class="form-control-label") }}
+              {% if form.password.errors %}
+                  {{ form.password(class="form-control form-control is-invalid") }}
+                  {% for error in form.password.errors %}
+                      <div class="invalid-feedback">
+                          <span>{{ error }}</span>
+                      </div>
+                  {% endfor %}
+              {% else %}
+                    {{ form.password(class="form-control form-control") }}
+              {% endif %}
+          </div>
+  
+
+          <div class="form-group">
+              {{ form.submit(class="btn btn-outline-info")}}
+          </div>
+      </form>
     </div>
     
 </body>

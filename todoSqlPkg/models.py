@@ -1,10 +1,12 @@
 # models.py
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
+from flask_login import UserMixin
+
 
 db = SQLAlchemy()
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     """ User model """
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -39,10 +41,11 @@ def save_todo(title, description, completed, data_created):
     pass
 
 
-def get_user(username):
-    # user_data = users_collection.find_one({'_id': username})
-    # return User(user_data['_id'], user_data['email'], user_data['password']) if user_data else None
-    pass
+# def get_user(username):
+#     # user_data = users_collection.find_one({'_id': username})
+#     # return User(user_data['_id'], user_data['email'], user_data['password']) if user_data else None
+#     user_object = User.query.filter_by(username=username).first()
+#     return user_object if user_object else None
 
 
 def get_password(username):

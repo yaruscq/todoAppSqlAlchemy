@@ -20,23 +20,28 @@
           
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
+                {% if request.endpoint != 'main.index' %}
+                <!-- Show these buttons only for logged-in users -->
                 <li class="nav-item active">
-                  <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
+                  <a class="nav-link" href="{{ url_for('main.logout') }}">Home</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="{{ url_for('main.view_todos') }}">Todos</a>
+                    <a class="nav-link" href="{{ url_for('main.view_todos') }}">View Todos</a>
                   </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{{ url_for('main.add_todo') }}">Add Todo</a>
                 </li>
+                {% endif %}
               </ul>
             </div>
           </nav>
     </header>
 
+
+    <div class="m-3">
+      <h1 class="p1 m1">Add Todo</h1>
     
-    <div class="col-md-8">
-        <h1 class="p1 m1">Add TODO</h1>
+      <div class="col-md-8">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
               {% for category, message in messages %}
@@ -52,58 +57,58 @@
               {% endfor %}
             {% endif %}
           {% endwith %}
-    </div>
-    <div class="mb-3">
-    <form action="" method="POST" id="form">
-        {{ form.csrf_token() }}
-        <fieldset class="form-group">Add Todo Form</fieldset>
+      </div>
+    
+      <form action="" method="POST" id="form">
+          {{ form.csrf_token() }}
+          <!-- <fieldset class="form-group">Add Todo Form</fieldset> -->
 
-        <div class="form-group">
-            {{ form.title.label(class="form-control-label") }}
-            {% if form.title.errors %}
-                    {{ form.title(class="form-control form-control is-invalid") }}
-                    {% for error in form.title.errors %}
-                        <div class="invalid-feedback">
-                            <span>{{ error }}</span>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    {{ form.title(class="form-control form-control") }}
-                {% endif %}
-        </div>
+          <div class="form-group">
+              {{ form.title.label(class="form-control-label") }}
+              {% if form.title.errors %}
+                      {{ form.title(class="form-control form-control is-invalid") }}
+                      {% for error in form.title.errors %}
+                          <div class="invalid-feedback">
+                              <span>{{ error }}</span>
+                          </div>
+                      {% endfor %}
+                  {% else %}
+                      {{ form.title(class="form-control form-control") }}
+                  {% endif %}
+          </div>
 
-        <div class="form-group">
-            {{ form.completed.label(class="form-control-label") }}
-            {% if form.completed.errors %}
-                    {{ form.completed(class="form-control form-control is-invalid") }}
-                    {% for error in form.completed.errors %}
-                        <div class="invalid-feedback">
-                            <span>{{ error }}</span>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    {{ form.completed(class="form-control form-control") }}
-                {% endif %}
-        </div>
+          <div class="form-group">
+              {{ form.completed.label(class="form-control-label") }}
+              {% if form.completed.errors %}
+                      {{ form.completed(class="form-control form-control is-invalid") }}
+                      {% for error in form.completed.errors %}
+                          <div class="invalid-feedback">
+                              <span>{{ error }}</span>
+                          </div>
+                      {% endfor %}
+                  {% else %}
+                      {{ form.completed(class="form-control form-control") }}
+                  {% endif %}
+          </div>
 
-        <div class="form-group">
-            {{ form.description.label(class="form-control-label") }}
-            {% if form.description.errors %}
-                {{ form.description(class="form-control form-control is-invalid") }}
-                {% for error in form.description.errors %}
-                    <div class="invalid-feedback">
-                        <span>{{ error }}</span>
-                    </div>
-                {% endfor %}
-            {% else %}
-                {{ form.description(class="form-control form-control") }}
-            {% endif %}
-        </div>
+          <div class="form-group">
+              {{ form.description.label(class="form-control-label") }}
+              {% if form.description.errors %}
+                  {{ form.description(class="form-control form-control is-invalid") }}
+                  {% for error in form.description.errors %}
+                      <div class="invalid-feedback">
+                          <span>{{ error }}</span>
+                      </div>
+                  {% endfor %}
+              {% else %}
+                  {{ form.description(class="form-control form-control") }}
+              {% endif %}
+          </div>
 
-        <div class="form-group">
-            {{ form.submit(class="btn btn-outline-info submitButton")}}
-        </div>
-    </form>
+          <div class="form-group">
+              {{ form.submit(class="btn btn-outline-info")}}
+          </div>
+      </form>
 </div>
 
     <!-- bootstrap JS CDN -->

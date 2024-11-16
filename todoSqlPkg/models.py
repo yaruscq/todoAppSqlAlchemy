@@ -1,12 +1,12 @@
 # models.py
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
-from flask_login import UserMixin
+
 
 
 db = SQLAlchemy()
 
-class User(db.Model, UserMixin):
+class User(db.Model):
     """ User model """
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -15,7 +15,25 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f'<User: {self.username}>'
+    
+    
+    def is_authenticated(self):
+        """Return True if the user is authenticated."""
+        return True  # You can add more complex logic if needed
 
+    def is_active(self):
+        """Return True if the user account is active."""
+        return self.active
+
+    def is_anonymous(self):
+        """Return False because this is not an anonymous user."""
+        return False
+
+    def get_id(self):
+        # Flask-Login uses this to identify the user. Return username instead of id.
+        """Return the unique identifier for the user."""
+        return self.username  # Or self.id if you prefer
+    
 
 class Todos(db.Model):
     """ Todos model """
@@ -29,6 +47,8 @@ class Todos(db.Model):
 
     def __repr__(self):
         return f'<Todo: {self.title} || {self.description} || {self.completed} || {self.date_created}>'
+    
+    
 
 
 def save_user(user, password):
@@ -41,11 +61,7 @@ def save_todo(title, description, completed, data_created):
     pass
 
 
-# def get_user(username):
-#     # user_data = users_collection.find_one({'_id': username})
-#     # return User(user_data['_id'], user_data['email'], user_data['password']) if user_data else None
-#     user_object = User.query.filter_by(username=username).first()
-#     return user_object if user_object else None
+
 
 
 def get_password(username):

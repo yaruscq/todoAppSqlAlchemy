@@ -8,39 +8,27 @@ from flask_login import login_user, logout_user, login_required, current_user
 
 main = Blueprint('main', '__name__')
 
+# With "id"
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User.query.get(user_id)
 
+
+# With "username"
 @login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(user_id)
-
+def load_user(username):
+    return User.query.filter_by(username=username).first()
 
 
 @main.route('/', methods=['POST', 'GET'])
 def index():
     message = ''
     login_form = UserForm()
-    # if request.method == 'POST':
-    #     username = form.username.data
-    #     password = form.password.data
-
-    #     user = User.query.filter_by(username=username).first_or_404()
-    #     if user is not None:
-    #         message = f'The user is {user.username}'
-    #         return redirect(url_for('main.view_todos'))
-    #     else:
-    #         message = 'No such a user!'
-    #         return redirect(url_for('main.index'))
-            
-        
-    # return render_template('index.html', message=message, form=form)
     if login_form.validate_on_submit():
         user_object = User.query.filter_by(username=login_form.username.data).first()
         login_user(user_object)
         print(f'\nValid user: {user_object.username}\n')
         return redirect(url_for('main.view_todos'))
-    # else:
-    #     message = 'Invalid password. Please try again.'
-    #     return render_template('index.html', form=login_form, message=message)
     
     return render_template('index.html', form=login_form)
 
@@ -48,7 +36,7 @@ def index():
 @main.route('/view_todos')
 @login_required
 def view_todos():
-    # all_todos = Todos.query.all().sort('date_created', -1)
+    
     # if current_user.is_authenticated:
         all_todos = Todos.query.order_by(Todos.date_created.desc()).all()
         print(all_todos)
@@ -170,3 +158,8 @@ def logout():
 def page_not_found(e):
     # note that we set the 404 status explicitly
     return render_template('404.html'), 404
+
+
+@main.route('/debug')
+def debug():
+    return f"Current user: {current_user.username if current_user.is_authenticated else 'None'}"

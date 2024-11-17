@@ -1,5 +1,6 @@
 from flask import Flask, render_template, Blueprint, request, redirect, url_for, flash
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from .models import db, User, Todos
 from .forms import TodoForm, UserForm
 from .extensions import login_manager
@@ -51,7 +52,8 @@ def add_todo():
         todo_title = form.title.data
         todo_description = form.description.data
         completed = form.completed.data == "True"
-        date_created = datetime.now(timezone.utc).replace(microsecond=0)
+        # date_created = datetime.now(timezone.utc).replace(microsecond=0)
+        date_created = datetime.now(ZoneInfo('Asia/Taipei')).replace(microsecond=0)
 
         new_todo = Todos(
             title= todo_title,
@@ -84,61 +86,66 @@ def delete_todo(id):
 @main.route('/update_todo/<int:id>', methods=['GET', 'POST'])
 @login_required
 def update_todo(id):
-    # # Retrieve the todo by id
-    # todo = Todos.query.get_or_404(id)
+    # Retrieve the todo by id
+    todo = Todos.query.get(id)
 
-    # # Create an instance of the form
-    # form = TodoForm()
-    # if request.method == 'GET':
+    # Create an instance of the form
+    form = TodoForm(request.form)
+    if request.method == 'GET':
         
-    #     # Prepopulate the form fields with the current todo data
-    #     form.title.data = todo.title
-    #     form.description.data = todo.description
-    #     form.completed.data = 'True' if todo.completed else 'False'
-
-    # if request.method == 'POST':
-    #     # Update the todo fields with the form data
-    #     if form.validate_on_submit():
-    #         form = TodoForm(request.form)
-    #         todo.title = form.title.data
-    #         todo.description = form.description.data
-    #         todo.completed = form.completed.data == 'True' # Convert to boolean
-    #             # todo.date_created = datetime.now(timezone.utc).replace(microsecond=0)  # Update timestamp
-            
-    #         db.session.commit()
-    #         flash("Todo updated successfully!", "success")
-    #         return redirect(url_for('main.view_todos'))
-    #     else:
-    #         print(form.errors)
-
-        # try:
-        #     db.session.commit()
-        #     flash("Todo updated successfully!", "success")
-        #     return redirect(url_for('main.view_todos'))
-        # except Exception as e:
-        #     db.session.rollback()
-        #     flash(f'Error updating todo: {e}', 'danger')
-
-    if request.method == 'POST':
-        form = TodoForm(request.form)
-        todo = Todos.query.get_or_404(id)
-        todo.title = form.title.data
-        todo.description = form.description.data
-        todo.completed = form.completed.data == "True"
-        
-        db.session.commit()
-        # print(Todos.query.all())
-        flash("Todo successfully updated", "success")
-        return redirect('/view_todos')
-    
-    elif request.method == 'GET':
-        form = TodoForm()
-        todo = Todos.query.get_or_404(id)
-        print(todo)
         # Prepopulate the form fields with the current todo data
         form.title.data = todo.title
         form.description.data = todo.description
-        form.completed.data = form.completed.data == "True"
+        form.completed.data = 'True' if todo.completed else 'False'
+
+    if request.method == 'POST':
+        # Update the todo fields with the form data
+        todo = Todos.query.filter_by(id=id).first()
+        print(todo)
+        if form.validate_on_submit():
+            # form = TodoForm(request.form)
+            todo.title = form.title.data
+            todo.description = form.description.data
+            todo.completed = form.completed.data == 'True' # Convert to boolean
+            # todo.date_created = datetime.now(ZoneInfo('Asia/Taipei')).replace(microsecond=0)
+            
+        #     db.session.commit()
+        #     flash("Todo updated successfully!", "success")
+        #     return redirect(url_for('main.view_todos'))
+        # else:
+        #     print(form.errors)
+
+        try:
+            db.session.commit()
+            flash("Todo updated successfully!", "success")
+            return redirect(url_for('main.view_todos'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating todo: {e}', 'danger')
+
+
+    # 以下的方式： OK!
+    # form = TodoForm(request.form)
+    # if request.method == 'POST':
+        
+    #     todo = Todos.query.get_or_404(id)
+    #     todo.title = form.title.data
+    #     todo.description = form.description.data
+    #     todo.completed = form.completed.data == "True"
+        
+    #     db.session.commit()
+    #     # print(Todos.query.all())
+    #     flash("Todo successfully updated", "success")
+    #     return redirect('/view_todos')
+    
+    # elif request.method == 'GET':
+    #     form = TodoForm()
+    #     todo = Todos.query.get_or_404(id)
+    #     print(todo)
+    #     # Prepopulate the form fields with the current todo data
+    #     form.title.data = todo.title
+    #     form.description.data = todo.description
+    #     form.completed.data = form.completed.data == "True"
 
 
     return render_template('add_todo.html', form=form)

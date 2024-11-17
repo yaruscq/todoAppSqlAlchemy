@@ -1,7 +1,7 @@
 # models.py
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
-
+from zoneinfo import ZoneInfo  # Use pytz if on Python <3.9
 
 
 db = SQLAlchemy()
@@ -42,8 +42,14 @@ class Todos(db.Model):
     title = db.Column(db.String(150), nullable=False)
     description = db.Column(db.String(250), nullable=False)
     completed = db.Column(db.Boolean, default=False, nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.now(ZoneInfo('Asia/Taipei')).replace(microsecond=0), nullable=False)
     # date_created = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False)
-    date_created = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc).replace(microsecond=0), nullable=False)
+    # date_created = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc).replace(microsecond=0), nullable=False)
+    # date_created = db.Column(
+    #     db.DateTime,
+    #     default=lambda: datetime.now(timezone('Asia/Taipei')).replace(microsecond=0),
+    #     nullable=False
+    # )
 
     def __repr__(self):
         return f'<Todo: {self.title} || {self.description} || {self.completed} || {self.date_created}>'

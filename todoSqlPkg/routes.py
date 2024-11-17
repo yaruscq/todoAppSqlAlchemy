@@ -124,7 +124,7 @@ def update_todo(id):
             flash(f'Error updating todo: {e}', 'danger')
 
 
-    # 以下的方式： OK!
+    # 以下的方式也： OK!
     # form = TodoForm(request.form)
     # if request.method == 'POST':
         

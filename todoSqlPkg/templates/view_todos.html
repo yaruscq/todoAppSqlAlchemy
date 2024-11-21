@@ -2,11 +2,28 @@
 
 {% block content %}
 
-    <div class="content-section">
-        <h1 class="p-1 m-3">事項 全覽</h1>
-        
-    <div>
-        {% for todo in todos %}
+<section class="mt-5"></section>
+<div class="bg-light-gold container-md my-5 border-gold border-2">
+    <hr class="border-gold border-2">
+    <h2 class="display-5 fw-bold text-center py-3 text-muted">事項 全覽</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="input-group mb-3 col-md-6 text-center border-gold">
+                <span class="input-group-text bg-secondary text-light col-md-2 text-center" >全部</span>
+                <input type="text" class="fw-bolder fst-italic form-control text-center col-md-1 bg-success text-white fs-5" aria-label="Username" aria-describedby="basic-addon1" value="{{ task_counter }}" readonly>
+                <span class="input-group-text bg-secondary text-light col-md-2 text-center">完成</span>
+                <input type="text" class="fw-bolder fst-italic  form-control col-md-1 text-center bg-primary text-white fs-5" aria-label="Username" aria-describedby="basic-addon1" value="{{ task_done }}" readonly>
+                <span class="input-group-text bg-secondary text-light col-md-2 text-center ">尚未</span>
+                <input type="text" class="fw-bolder fst-italic  form-control text-center col-md-1 bg-danger text-white fs-5" aria-label="Username" aria-describedby="basic-addon1" value="{{ task_todo}}" readonly>
+            </div>
+        </div>
+    </div>
+    <hr class="border-gold border-2">
+</div>
+</section>
+
+<section>
+        <!-- {% for todo in todos %}
             <div class="card p-1 m-3">
                 <div class="card-body">
                     {% if todo.completed == True %}
@@ -17,11 +34,36 @@
                     <p class="card-text text-muted">{{ todo.date_created }}</p>
                     <p class="card-text">{{ todo.description }}</p>
                     
-                    <!-- For Update and Delete -->
+                    
                     <a href="{{ url_for('main.update_todo', id = todo.id) }}" class="btn btn-outline-info btn-sm">Update</a>
                     <a href="{{ url_for('main.delete_todo', id = todo.id) }}" class="btn btn-outline-danger btn-sm">Delete</a>
                 </div>
             </div>
-        {% endfor %}
+        {% endfor %} -->
+    {% for todo in todos %}
+    <div class="row my-4 align-items-center justify-content-center">
+        
+        <div class="col-10 col-md-8 col-lg-6">
+            <div class="card border-gold border-2">
+              <div class="card-header text-center p-3 bg-light-gold"></div>
+              <div class="card-body text-center py-5">
+                {% if todo.completed == True %}
+                <h4 class="card-title display-6 fw-normal text-gold"><del>{{ todo.title }}</del></h4>
+                {% else %}
+                <h4 class="card-title display-6 fw-normal text-gold">{{ todo.title }}</h4>
+                {% endif %}
+                <p class="lead card-subtitle text-muted">{{ todo.date_created }}</p>
+                <p class="card-text mx-5 my-3 d-lg-block fs-5">{{ todo.description }}</p>
+
+                <!-- <a href="{{ url_for('main.update_todo', id = todo.id) }}" class="btn btn-outline-info btn-lg mt-3">更 新</a> -->
+                <a href="{{ url_for('main.update_todo', id = todo.id) }}" class="btn btn-outline-primary btn-lg mt-3 text-primary border-1 border-bronze">更 新</a>
+                <a href="{{ url_for('main.delete_todo', id = todo.id) }}" class="btn btn-outline-danger btn-lg mt-3">刪 除</a>
+              </div>
+            </div>
+        </div>
+        
+
     </div>
+    {% endfor %}
+ </section>   
 {% endblock content %}

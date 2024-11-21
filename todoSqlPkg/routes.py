@@ -40,8 +40,15 @@ def view_todos():
     
     # if current_user.is_authenticated:
         all_todos = Todos.query.order_by(Todos.date_created.desc()).all()
+        print('\n')
         print(all_todos)
-        return render_template('view_todos.html', todos=all_todos)
+        task_counter = Todos.query.count()
+        task_done = Todos.query.filter(Todos.completed == True).count()
+        print('task_done : ' + str(task_done))
+        task_todo = task_counter - task_done
+        print('task_todo : ' + str(task_todo) + '\n')
+        
+        return render_template('view_todos.html', todos=all_todos, task_counter=task_counter, task_done=task_done, task_todo=task_todo)
     # return redirect(url_for('main.index'))
 
 @main.route('/add_todo', methods=['POST', 'GET'])

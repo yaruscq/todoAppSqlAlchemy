@@ -42,7 +42,7 @@ class UserForm(FlaskForm):
 
 
 class TodoForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    description = TextAreaField('Description',validators=[DataRequired()])
-    completed = SelectField('Completed', choices = [("False", "False"), ("True", "True")], validators = [DataRequired()])
-    submit = SubmitField("Add todo")
+    title = StringField('標題：', validators=[DataRequired()])
+    description = TextAreaField('描述：',validators=[DataRequired()])
+    completed = SelectField('完成否？(選單)', choices = [("False", "尚未"), ("True", "完成")], validators = [DataRequired()])
+    submit = SubmitField("增加 事項")

@@ -2,16 +2,23 @@
 
 {% block content %}
 
-    <div class="content-section">
+<section class="mt-5">
+    <div class="bg-light-gold container-md my-5 border-gold border-2">
+        <hr class="border-gold border-2">
+        <h2 class="display-5 fw-bold text-center py-3 text-muted">增加 事項</h2>
+        <hr class="border-gold border-2">
+    </div>
+</section>
+
+<section>
+    <div class="container col-sm-10 col-md-10 col-lg-8">
       
-      <h3>增加 事項</h3>
-    
       <form action="" method="POST" id="form">
           {{ form.csrf_token() }}
           <!-- <fieldset class="form-group">Add Todo Form</fieldset> -->
 
-          <div class="form-group">
-              {{ form.title.label(class="form-control-label") }}
+          <div class="form-group my-3">
+              {{ form.title.label(class="form-control-label lead fs-3 text-gold") }}
               {% if form.title.errors %}
                       {{ form.title(class="form-control form-control is-invalid") }}
                       {% for error in form.title.errors %}
@@ -20,12 +27,12 @@
                           </div>
                       {% endfor %}
                   {% else %}
-                      {{ form.title(class="form-control form-control") }}
+                      {{ form.title(class="form-control form-control lead fs-5 text-bronze fw-bold fst-italic") }}
                   {% endif %}
           </div>
 
-          <div class="form-group">
-              {{ form.completed.label(class="form-control-label") }}
+          <div class="form-group my-3">
+              {{ form.completed.label(class="form-control-label lead fs-3 text-gold") }}
               {% if form.completed.errors %}
                       {{ form.completed(class="form-control form-control is-invalid") }}
                       {% for error in form.completed.errors %}
@@ -34,12 +41,12 @@
                           </div>
                       {% endfor %}
                   {% else %}
-                      {{ form.completed(class="form-control form-control") }}
+                      {{ form.completed(class="form-control form-control lead fs-5 text-bronze") }}
                   {% endif %}
           </div>
 
-          <div class="form-group">
-              {{ form.description.label(class="form-control-label") }}
+          <div class="form-group my-2">
+              {{ form.description.label(class="form-control-label lead fs-3 text-gold") }}
               {% if form.description.errors %}
                   {{ form.description(class="form-control form-control is-invalid") }}
                   {% for error in form.description.errors %}
@@ -48,14 +55,15 @@
                       </div>
                   {% endfor %}
               {% else %}
-                  {{ form.description(class="form-control form-control") }}
+                  {{ form.description(class="form-control form-control lead fs-5 text-bronze fst-italic") }}
               {% endif %}
           </div>
 
-          <div class="form-group">
-              {{ form.submit(class="btn btn-outline-info")}}
+          <div class="form-group my-3">
+              {{ form.submit(class="btn btn-outline-secondary mt-3 bg-light-gold text-gold border-1 border-bronze fw-bold")}}
           </div>
       </form>
 
   </div>
+</section>
 {% endblock content %}

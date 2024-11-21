@@ -47,8 +47,55 @@ def view_todos():
         print('task_done : ' + str(task_done))
         task_todo = task_counter - task_done
         print('task_todo : ' + str(task_todo) + '\n')
+
+        # print('filter = ' + request.args['filter'])
+        # print('color = ' + request.args['color'])
+
+
+
+
+        todos = all_todos
+        message = ''
+        # filter_type = request.args.get('filter')  # Default filter
+        # print(filter_type)
+        filter_type = request.args.get('filter', 'all')
+        filter_type = request.args.get('filter')
+        if filter_type == 'completed':
+            counter = Todos.query.filter(Todos.completed == True).count()
+            print('counter = ' + str(counter))
+            if counter != 0:
+                todos = Todos.query.filter(Todos.completed == True).order_by(Todos.date_created.desc()).all()
+            else:
+                # todos = None
+                todos = []
+                message = '都尚未完成！'
+        elif filter_type == 'incompleted':
+            counter = Todos.query.filter(Todos.completed == False).count()
+            print('counter = ' + str(counter))
+            if counter != 0:
+                todos = Todos.query.filter(Todos.completed == False).order_by(Todos.date_created.desc()).all()
+            else:
+                todos = []
+                message = '全部完成！'
+        else:
+            if Todos.query.count() != 0:
+                todos = Todos.query.order_by(Todos.date_created.desc()).all()
+            else:
+                # todos = None
+                todos = []
+                message = '沒有任何要做的事項！'
+        # # Filter todos based on the filter_type
+        # if filter_type == 'completed':
+        #     # todos = Todos.query.filter_by(completed=True).all()
+        #     print('filter = ' + filter_type)
+        # elif filter_type == 'incompleted':
+        #     # todos = Todos.query.filter_by(completed=False).all()
+        #     print('filter = ' + filter_type)
+        # else:  # Default to 'all'
+        #     # todos = Todos.query.all()
+            
         
-        return render_template('view_todos.html', todos=all_todos, task_counter=task_counter, task_done=task_done, task_todo=task_todo)
+        return render_template('view_todos.html', todos=todos, task_counter=task_counter, task_done=task_done, task_todo=task_todo, message=message)
     # return redirect(url_for('main.index'))
 
 @main.route('/add_todo', methods=['POST', 'GET'])
@@ -72,6 +119,10 @@ def add_todo():
         db.session.commit()
         print(Todos.query.all())
         flash("Todo successfully added", "success")
+
+        # Preserve the filter parameter in the redirect
+        filter_type = request.args.get('filter', 'all')
+
         return redirect('/view_todos')
         
     else:
@@ -87,7 +138,10 @@ def delete_todo(id):
     db.session.delete(todo)
     db.session.commit()
     flash("Todo successfully deleted", "success")
-    return redirect('/view_todos')
+    # Preserve the filter parameter in the redirect
+    filter_type = request.args.get('filter', 'all')
+    
+    return redirect(url_for('main.view_todos', filter=filter_type))
 
 
 @main.route('/update_todo/<int:id>', methods=['GET', 'POST'])
@@ -125,7 +179,9 @@ def update_todo(id):
         try:
             db.session.commit()
             flash("Todo updated successfully!", "success")
-            return redirect(url_for('main.view_todos'))
+            # Preserve the filter parameter in the redirect
+            filter_type = request.args.get('filter', 'all')
+            return redirect(url_for('main.view_todos', filter=filter_type))
         except Exception as e:
             db.session.rollback()
             flash(f'Error updating todo: {e}', 'danger')

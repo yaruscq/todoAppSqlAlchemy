@@ -6,7 +6,7 @@
 <div class="bg-light-gold container-md my-5 border-gold border-2">
     <hr class="border-gold border-2">
     <h2 class="display-5 fw-bold text-center py-3 text-muted">事項 全覽</h2>
-    <div class="row justify-content-center">
+    <!-- <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="input-group mb-3 col-md-6 text-center border-gold">
                 <span class="input-group-text bg-secondary text-light col-md-2 text-center" >全部</span>
@@ -17,9 +17,21 @@
                 <input type="text" class="fw-bolder fst-italic  form-control text-center col-md-1 bg-danger text-white fs-5" aria-label="Username" aria-describedby="basic-addon1" value="{{ task_todo}}" readonly>
             </div>
         </div>
-    </div>
+    </div> -->
+        <div class="row justify-content-center">
+            
+                <div class="col-sm-9 col-md-8 col-lg-6 mb-1 text-center border-gold">
+                    <div class="btn-group d-flex" role="group">
+                        <a href="{{ url_for('main.view_todos', filter='all', color='green') }}" class="btn btn-success px-3 flex-fill fs-5">全部：{{ task_counter }}</a>
+                        <a href="{{ url_for('main.view_todos', filter='completed', color='blue') }}" class="btn btn-primary px-3 flex-fill fs-5">完成：{{ task_done }}</a>
+                        <a href="{{ url_for('main.view_todos', filter='incompleted', color='red') }}" class="btn btn-danger px-3 flex-fill fs-5">尚未：{{ task_todo }}</a>
+                    </div>
+                </div>
+        </div>
+
     <hr class="border-gold border-2">
 </div>
+    
 </section>
 
 <section>
@@ -40,7 +52,12 @@
                 </div>
             </div>
         {% endfor %} -->
-    {% for todo in todos %}
+    
+    
+    {% if todos|length != 0 %}
+   
+        {% for todo in todos %}
+    
     <div class="row my-4 align-items-center justify-content-center">
         
         <div class="col-10 col-md-8 col-lg-6">
@@ -61,9 +78,10 @@
               </div>
             </div>
         </div>
-        
-
     </div>
-    {% endfor %}
+    {% endfor %} 
+    {% elif todos|length == 0 %}
+        <h4 class="text-center">{{ message }}</h4>
+    {% endif %}
  </section>   
 {% endblock content %}

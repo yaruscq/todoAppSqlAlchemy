@@ -37,66 +37,104 @@ def index():
 @main.route('/view_todos')
 @login_required
 def view_todos():
+    page = request.args.get('page', 1, type=int)
+    filter_type = request.args.get('filter', 'all')
+
+    # Query task counts
+    task_counter = Todos.query.count()
+    task_done = Todos.query.filter_by(completed=True).count()
+    task_todo = Todos.query.filter_by(completed=False).count()
+    per_page=2
+
+    # Check if all task counts are zero
+    if task_counter == 0:
+        message = "沒有任何待辦事項，請「增加」！"
+    elif filter_type == 'completed' and task_done == 0:
+        message = "沒有完成任何一件待辦事項！"
+    elif filter_type == 'incompleted' and task_todo == 0:
+        message = "很棒！待辦事項全部完成！"
+    else:
+        message = ""
+
+    # Filter todos based on filter_type
+    if filter_type == 'completed':
+        todos_query = Todos.query.filter_by(completed=True)
+    elif filter_type == 'incompleted':
+        todos_query = Todos.query.filter_by(completed=False)
+    else:
+        todos_query = Todos.query
+
+    # Paginate the filtered query
+    todos = todos_query.order_by(Todos.date_created.desc()).paginate(page=page, per_page=per_page)
+
+    return render_template(
+        'view_todos.html',
+        todos=todos,
+        task_counter=task_counter,
+        task_done=task_done,
+        task_todo=task_todo,
+        message=message,
+        filter_type=filter_type
+    )
+
+
+
+
+# @main.route('/view_todos')
+# @login_required
+# def view_todos():
     
-    # if current_user.is_authenticated:
-        all_todos = Todos.query.order_by(Todos.date_created.desc()).all()
-        print('\n')
-        print(all_todos)
-        task_counter = Todos.query.count()
-        task_done = Todos.query.filter(Todos.completed == True).count()
-        print('task_done : ' + str(task_done))
-        task_todo = task_counter - task_done
-        print('task_todo : ' + str(task_todo) + '\n')
-
-        # print('filter = ' + request.args['filter'])
-        # print('color = ' + request.args['color'])
+#         all_todos = Todos.query.order_by(Todos.date_created.desc()).all()
+#         print('\n')
+#         print(all_todos)
+#         task_counter = Todos.query.count()
+#         task_done = Todos.query.filter(Todos.completed == True).count()
+#         print('task_done : ' + str(task_done))
+#         task_todo = task_counter - task_done
+#         print('task_todo : ' + str(task_todo) + '\n')
 
 
-
-
-        todos = all_todos
-        message = ''
-        # filter_type = request.args.get('filter')  # Default filter
-        # print(filter_type)
-        filter_type = request.args.get('filter', 'all')
-        filter_type = request.args.get('filter')
-        if filter_type == 'completed':
-            counter = Todos.query.filter(Todos.completed == True).count()
-            print('counter = ' + str(counter))
-            if counter != 0:
-                todos = Todos.query.filter(Todos.completed == True).order_by(Todos.date_created.desc()).all()
-            else:
-                # todos = None
-                todos = []
-                message = '都尚未完成！'
-        elif filter_type == 'incompleted':
-            counter = Todos.query.filter(Todos.completed == False).count()
-            print('counter = ' + str(counter))
-            if counter != 0:
-                todos = Todos.query.filter(Todos.completed == False).order_by(Todos.date_created.desc()).all()
-            else:
-                todos = []
-                message = '全部完成！'
-        else:
-            if Todos.query.count() != 0:
-                todos = Todos.query.order_by(Todos.date_created.desc()).all()
-            else:
-                # todos = None
-                todos = []
-                message = '沒有任何要做的事項！'
-        # # Filter todos based on the filter_type
-        # if filter_type == 'completed':
-        #     # todos = Todos.query.filter_by(completed=True).all()
-        #     print('filter = ' + filter_type)
-        # elif filter_type == 'incompleted':
-        #     # todos = Todos.query.filter_by(completed=False).all()
-        #     print('filter = ' + filter_type)
-        # else:  # Default to 'all'
-        #     # todos = Todos.query.all()
-            
+#         todos = all_todos
+#         message = ''
+#         # filter_type = request.args.get('filter')  # Default filter
+#         # print(filter_type)
+#         page = request.args.get('page', 1, type=int)
+#         per_page = 2
+#         filter_type = request.args.get('filter', 'all')
+#         filter_type = request.args.get('filter')
         
-        return render_template('view_todos.html', todos=todos, task_counter=task_counter, task_done=task_done, task_todo=task_todo, message=message)
-    # return redirect(url_for('main.index'))
+
+#         if filter_type == 'completed':
+#             counter = Todos.query.filter(Todos.completed == True).count()
+#             print('counter = ' + str(counter))
+#             if counter != 0:
+#                 # todos = Todos.query.filter(Todos.completed == True).order_by(Todos.date_created.desc()).all()
+#                 todos = Todos.query.filter(Todos.completed == True).order_by(Todos.date_created.desc()).paginate(page=page, per_page=per_page)
+                
+#             else:
+#                 # todos = None
+#                 todos = []
+#                 message = '都尚未完成！'
+#         elif filter_type == 'incompleted':
+#             counter = Todos.query.filter(Todos.completed == False).count()
+#             print('counter = ' + str(counter))
+#             if counter != 0:
+#                 todos = Todos.query.filter(Todos.completed == False).order_by(Todos.date_created.desc()).paginate(page=page, per_page=per_page)
+                
+#             else:
+#                 todos = []
+#                 message = '全部完成！'
+#         else:
+#             if Todos.query.count() != 0:
+#                 todos = Todos.query.order_by(Todos.date_created.desc()).paginate(page=page, per_page=per_page)
+                
+#             else:
+#                 # todos = None
+#                 todos = []
+#                 message = '沒有任何要做的事項！'
+        
+#         return render_template('view_todos.html', todos=todos, task_counter=task_counter, task_done=task_done, task_todo=task_todo, message=message)
+    
 
 @main.route('/add_todo', methods=['POST', 'GET'])
 @login_required
@@ -140,7 +178,7 @@ def delete_todo(id):
     flash("Todo successfully deleted", "success")
     # Preserve the filter parameter in the redirect
     filter_type = request.args.get('filter', 'all')
-    
+
     return redirect(url_for('main.view_todos', filter=filter_type))
 
 

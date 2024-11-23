@@ -5,7 +5,7 @@ from wtforms import StringField, TextAreaField, PasswordField, SelectField, Subm
 from wtforms.validators import DataRequired, InputRequired, ValidationError
 
 from .models import User
-
+from .extensions import bcrypt
 
 
 
@@ -20,7 +20,10 @@ def check_validate_credentials(form, field):
 
     if user_object is None:
         raise ValidationError('Username or password is invalid!')
-    elif password_enter != user_object.password:
+    # elif password_enter != user_object.password:
+    elif not bcrypt.check_password_hash(user_object.password, password_enter):
+        print(user_object.password)
+        print(password_enter)
         raise ValidationError('Password is incorrect!')
 
 class UserForm(FlaskForm):

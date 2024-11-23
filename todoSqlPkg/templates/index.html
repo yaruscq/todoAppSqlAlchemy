@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-    <div class="content-section">
-      <h1 class="p1 m1">Welcome to Todo App!</h1>
+<section>
+    <div class="container justify-content-center">
+      <h1 class="p-1 my-4 text-center display-5">歡迎來到待辦事項 APP</h1>
       <p style="color: red;">{{ message }}</p>
+      <div class="container col-sm-10 col-md-10 col-lg-8">
         <form action="" method="POST">
           {{ form.csrf_token() }}
           <!-- <fieldset class="form-group">Index Page</fieldset> -->
   
-          <div class="form-group">
-              {{ form.username.label(class="form-control-label") }}<br>
+          <div class="form-group my-3">
+              {{ form.username.label(class="form-control-label lead fs-4 text-gold") }}<br>
               {% if form.username.errors %}
                  {{ form.username(class="form-control form-control is-invalid") }}
                  {% for error in form.username.errors %}
@@ -23,8 +24,8 @@
               {% endif %}
           </div>
   
-          <div class="form-group">
-              {{ form.password.label(class="form-control-label") }}
+          <div class="form-group my-3">
+              {{ form.password.label(class="form-control-label  lead fs-4 text-gold") }}
               {% if form.password.errors %}
                   {{ form.password(class="form-control form-control is-invalid") }}
                   {% for error in form.password.errors %}
@@ -38,9 +39,11 @@
           </div>
   
 
-          <div class="form-group">
-              {{ form.submit(class="btn btn-outline-info mt-3")}}
+          <div class="form-group my-3">
+              {{ form.submit(class="btn btn-outline-info mt-2")}}
           </div>
       </form>
     </div>
+</div>
+</section>
 {% endblock content %}

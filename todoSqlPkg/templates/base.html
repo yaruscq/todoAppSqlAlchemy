@@ -15,35 +15,12 @@
 
     <!-- sweetalert js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.12.5/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename="bs_custom.css") }}">
     {% if title %}
     <title>Todo - {{ title }}</title>
     {% else %}
     <title>Todos App</title>
     {% endif %}
-    <style>
-      .bg-light-gold{
-        
-        background-color: #fbf5e5;
-      }
-      .text-gold{
-        color : #c29938;
-      }
-      .border-gold{
-        border-color: #c29938;
-      }
-      .text-bronze{
-        color: #CD7F32;
-      }
-      .border-bronze{
-        color: #CD7F32;
-      }
-      .text-silver{
-        color:#C0C0C0;
-      }
-      .text-darkgray{
-        color:#A9A9A9;
-      }
-    </style>
 </head>
 <body>
     <header>
@@ -51,13 +28,14 @@
           <div class="container-fluid">
             <a class="navbar-brand" href="#">待辦事項</a>
             <!-- Toggle button for collapsing navbar -->
+    {% if current_user.is_authenticated and request.endpoint != 'main.index' %}
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
           
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
-                {% if current_user.is_authenticated and request.endpoint != 'main.index' %}
+                
                 <!-- Show these buttons only for logged-in users -->
                 <li class="nav-item active">
                   <a class="nav-link" href="{{ url_for('main.logout') }}">登入</a>
@@ -68,9 +46,10 @@
                 <li class="nav-item">
                   <a class="nav-link" href="{{ url_for('main.add_todo') }}">增加</a>
                 </li>
-                {% endif %}
+                
               </ul>
             </div>
+    {% endif %}
           </div>
           </nav>
     </header>

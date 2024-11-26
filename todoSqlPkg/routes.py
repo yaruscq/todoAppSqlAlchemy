@@ -271,3 +271,12 @@ def page_not_found(e):
 @main.route('/debug')
 def debug():
     return f"Current user: {current_user.username if current_user.is_authenticated else 'None'}"
+
+
+
+@main.after_request
+def add_no_cache_headers(response):
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, post-check=0, pre-check=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
